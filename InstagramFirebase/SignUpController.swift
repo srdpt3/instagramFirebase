@@ -2,14 +2,14 @@
 //  ViewController.swift
 //  InstagramFirebase
 //
-//  Created by Brian Voong on 3/15/17.
+//  Created by Dustin Yang on 3/15/17.
 //  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
 import UIKit
 import Firebase
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let plusPhotoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -148,6 +148,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     
                     print("Successfully saved user info to db")
                     
+                    guard let mainTabBarController  =  UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { return }
+                    
+                    mainTabBarController.setupViewController()
+                    self.dismiss(animated: true, completion: nil)
+
+                    
                 })
 
                 
@@ -156,8 +162,34 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         })
     }
 
+    let alreadyHaveButton: UIButton = {
+        let button = UIButton(type: .system)
+        
+        let attributedTitle = NSMutableAttributedString(string: "Already have an account?.", attributes: [NSFontAttributeName:UIFont.systemFont(ofSize: 14), NSForegroundColorAttributeName:UIColor.lightGray])
+        
+        
+        attributedTitle.append(NSAttributedString(string: "Sign up", attributes: [NSFontAttributeName:UIFont.systemFont(ofSize: 14), NSForegroundColorAttributeName: UIColor.rgb(red: 17, green: 154, blue: 237)]))
+        
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        //  button.setTitle("Don't have an account?  Sign Up.", for: .normal)
+        button.addTarget(self, action: #selector(handleAlreadyHaveAnAccount), for: .touchUpInside)
+        return button
+    }()
+
+    func handleAlreadyHaveAnAccount(){
+        
+        navigationController?.popViewController(animated: true)
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(alreadyHaveButton)
+        
+        alreadyHaveButton.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
+        
+        view.backgroundColor = .white
         
         view.addSubview(plusPhotoButton)
         

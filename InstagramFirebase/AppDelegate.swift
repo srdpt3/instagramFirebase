@@ -2,8 +2,8 @@
 //  AppDelegate.swift
 //  InstagramFirebase
 //
-//  Created by Brian Voong on 3/15/17.
-//  Copyright © 2017 Lets Build That App. All rights reserved.
+//  Created by Dustin Yang on 3/15/17.
+//  Copyright © 2017 ds. All rights reserved.
 //
 
 import UIKit

@@ -2,7 +2,7 @@
 //  UserProfileController.swift
 //  InstagramFirebase
 //
-//  Created by Brian Voong on 3/22/17.
+//  Created by Dustin Yang on 3/22/17.
 //  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
@@ -25,6 +25,39 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerId")
         
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        
+        setupLogOutButton()
+    }
+    
+    fileprivate func setupLogOutButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
+    }
+    
+    func handleLogOut() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        alertController.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { (_) in
+            
+            do {
+                try FIRAuth.auth()?.signOut()
+               
+                let loginController = LoginController()
+                let navController = UINavigationController(rootViewController: loginController)
+                
+                self.present(navController, animated: true, completion: nil)
+                
+                
+                
+            } catch let signOutErr {
+                print("Failed to sign out:", signOutErr)
+            }
+            
+            
+        }))
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alertController, animated: true, completion: nil)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -93,7 +126,7 @@ struct User {
     
     init(dictionary: [String: Any]) {
         self.username = dictionary["username"] as? String ?? ""
-        self.profileImageUrl = dictionary["profileImageUrl"]  as? String ?? ""
+        self.profileImageUrl = dictionary["profileImageURL"]  as? String ?? ""
     }
 }
 

@@ -2,7 +2,7 @@
 //  UserProfileHeader.swift
 //  InstagramFirebase
 //
-//  Created by Brian Voong on 3/22/17.
+//  Created by Dustin Yang on 3/22/17.
 //  Copyright © 2017 Lets Build That App. All rights reserved.
 //
 
