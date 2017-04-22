@@ -12,6 +12,7 @@ import Firebase
 class UserProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let cellId = "cellId"
+    let headerId = "headerId"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,12 +23,44 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         
         fetchUser()
         
-        collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerId")
+        collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
         
-        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
         setupLogOutButton()
+        
+        
+        // fetchPost()
+        
+        fetchOrderdPosts()
     }
+    
+    
+    var posts = [Post]()
+    
+    fileprivate func fetchOrderdPosts(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid  else { return }
+        
+        let ref = FIRDatabase.database().reference().child("posts").child(uid)
+        
+        ref.queryOrdered(byChild: "creationDate").observe(.childAdded, with: { (snapshot) in
+            print(snapshot)
+            
+            guard let dicts = snapshot.value as? [String : Any] else { return }
+            
+            guard let user = self.user else { return }
+            let post = Post(user : user, dict: dicts)
+            
+            self.posts.insert(post, at: 0) //like a stack, last in  = first image shown
+            self.collectionView?.reloadData()
+            
+        }) { (err) in
+            print(err)
+        }
+    }
+    
+    
+    
     
     fileprivate func setupLogOutButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
@@ -40,7 +73,7 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
             
             do {
                 try FIRAuth.auth()?.signOut()
-               
+                
                 let loginController = LoginController()
                 let navController = UINavigationController(rootViewController: loginController)
                 
@@ -61,14 +94,13 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
+        return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
         
-        cell.backgroundColor = .purple
-        
+        cell.post = posts[indexPath.item]
         return cell
     }
     
@@ -104,32 +136,16 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     fileprivate func fetchUser() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
         
-        FIRDatabase.database().reference().child("users").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
-            print(snapshot.value ?? "")
+        FIRDatabase.fetchUserWithUID(uid: uid) { (user) in
+            self.user = user
             
-            guard let dictionary = snapshot.value as? [String: Any] else { return }
-            
-            self.user = User(dictionary: dictionary)
             self.navigationItem.title = self.user?.username
             
             self.collectionView?.reloadData()
-        
-        }) { (err) in
-            print("Failed to fetch user:", err)
+            
         }
     }
 }
-
-struct User {
-    let username: String
-    let profileImageUrl: String
-    
-    init(dictionary: [String: Any]) {
-        self.username = dictionary["username"] as? String ?? ""
-        self.profileImageUrl = dictionary["profileImageURL"]  as? String ?? ""
-    }
-}
-
 
 
 
