@@ -10,6 +10,16 @@ import UIKit
 
 class UsersearchCell: UICollectionViewCell {
     
+    var user : User? {
+        
+        didSet{
+            usernameLabel.text = user?.username
+            guard let  profileImageUrl = user?.profileImageUrl else { return }
+            profileImageView.loadImage(urlString: profileImageUrl)
+        }
+    }
+    
+    
     let profileImageView : CustomImageView = {
         
         let iv = CustomImageView()
@@ -32,10 +42,10 @@ class UsersearchCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-
+        
         addSubview(profileImageView)
         addSubview(usernameLabel)
-
+        
         profileImageView.anchor(top: nil, left: leftAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 50, height: 50)
         
         profileImageView.layer.cornerRadius = 50/2

@@ -14,12 +14,14 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     let cellId = "cellId"
     let headerId = "headerId"
     
+    
+    var userId  : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         collectionView?.backgroundColor = .white
         
-        navigationItem.title = FIRAuth.auth()?.currentUser?.uid
         
         fetchUser()
         
@@ -28,18 +30,16 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
         collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
         setupLogOutButton()
-        
-        
-        // fetchPost()
-        
-        fetchOrderdPosts()
+      //  fetchOrderdPosts()
     }
     
     
     var posts = [Post]()
     
     fileprivate func fetchOrderdPosts(){
-        guard let uid = FIRAuth.auth()?.currentUser?.uid  else { return }
+        
+        guard let uid = self.user?.uid else { return }
+   
         
         let ref = FIRDatabase.database().reference().child("posts").child(uid)
         
@@ -134,15 +134,16 @@ class UserProfileController: UICollectionViewController, UICollectionViewDelegat
     
     var user: User?
     fileprivate func fetchUser() {
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
         
+        let uid = userId ?? (FIRAuth.auth()?.currentUser?.uid ?? "")
+
         FIRDatabase.fetchUserWithUID(uid: uid) { (user) in
             self.user = user
             
             self.navigationItem.title = self.user?.username
             
             self.collectionView?.reloadData()
-            
+            self.fetchOrderdPosts()
         }
     }
 }
