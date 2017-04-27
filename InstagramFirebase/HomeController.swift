@@ -15,20 +15,46 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
     override func viewDidLoad() {
         super.viewDidLoad()
         
+      //  let name = NSNotification.Name(rawValue: "UploadFeed")
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateFeed), name: SharePhotoController.updateFeedName, object: nil)
+        
         collectionView?.backgroundColor = .white
         
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: cellId)
         
         setupNavigationItems()
-      //  fetchPost()
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        
+        collectionView?.refreshControl = refreshControl;
+        fetchAllPost()
+        
+    }
+    
+    func handleUpdateFeed(){
+        handleRefresh()
+    }
+    
+    func handleRefresh(){
+        
+        posts.removeAll()
+        
+        fetchAllPost()
+    }
+    
+    fileprivate func fetchAllPost(){
+        
+        fetchPost()
         
         fetchFollowingUserIds()
-  
     }
     
     fileprivate func fetchFollowingUserIds(){
         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
         FIRDatabase.database().reference().child("following").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            self.collectionView?.refreshControl?.endRefreshing()
             
             guard let userIdsDict = snapshot.value as? [String:Any] else { return }
             
@@ -51,7 +77,15 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
     func setupNavigationItems(){
         
         navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo2"))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
         
+    }
+    
+    func handleCamera(){
+        
+        let cameraController = CameraController()
+        
+        present(cameraController, animated: true, completion: nil)
         
     }
     
@@ -91,7 +125,7 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
     }
     
     fileprivate func fetchPostWithUser(user : User){
-
+        
         let ref = FIRDatabase.database().reference().child("posts").child(user.uid)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -107,7 +141,7 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
             })
             //Sort by creation Date
             self.posts.sort(by: { (p1, p2) -> Bool in
-               return p1.creationDate.compare(p2.creationDate) == .orderedDescending
+                return p1.creationDate.compare(p2.creationDate) == .orderedDescending
             })
             
             self.collectionView?.reloadData()
@@ -115,7 +149,7 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
         }) { (err) in
             print("Failed to fetch posts")
         }
-
+        
         
         
     }
