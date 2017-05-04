@@ -28,6 +28,9 @@
 		11DE43671EB8169100730F85 /* PreviewPhotoContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE43661EB8169100730F85 /* PreviewPhotoContainerView.swift */; };
 		11DE43691EB82D3700730F85 /* CustomAnimationPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE43681EB82D3700730F85 /* CustomAnimationPresentor.swift */; };
 		11DE436B1EB82FFB00730F85 /* CustomAnimationDismiss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE436A1EB82FFB00730F85 /* CustomAnimationDismiss.swift */; };
+		11DE436D1EB972E200730F85 /* CommentsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE436C1EB972E200730F85 /* CommentsController.swift */; };
+		11DE436F1EBAD63200730F85 /* CommentsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE436E1EBAD63200730F85 /* CommentsCell.swift */; };
+		11DE43711EBAD88D00730F85 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE43701EBAD88D00730F85 /* Comment.swift */; };
 		8C575D7A6BF6CEEE0A09E0B3 /* Pods_InstagramFirebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3BD8A110B7597B07DD7B005 /* Pods_InstagramFirebase.framework */; };
 		C7966F9C1E85F4910054FE2A /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7966F9B1E85F4910054FE2A /* LoginController.swift */; };
 		C7D90C8D1E7A24F7008526BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D90C8C1E7A24F7008526BE /* AppDelegate.swift */; };
@@ -63,6 +66,9 @@
 		11DE43661EB8169100730F85 /* PreviewPhotoContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewPhotoContainerView.swift; sourceTree = "<group>"; };
 		11DE43681EB82D3700730F85 /* CustomAnimationPresentor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAnimationPresentor.swift; sourceTree = "<group>"; };
 		11DE436A1EB82FFB00730F85 /* CustomAnimationDismiss.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomAnimationDismiss.swift; sourceTree = "<group>"; };
+		11DE436C1EB972E200730F85 /* CommentsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsController.swift; sourceTree = "<group>"; };
+		11DE436E1EBAD63200730F85 /* CommentsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsCell.swift; sourceTree = "<group>"; };
+		11DE43701EBAD88D00730F85 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		B3BD8A110B7597B07DD7B005 /* Pods_InstagramFirebase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InstagramFirebase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7966F9B1E85F4910054FE2A /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		C7D90C891E7A24F7008526BE /* InstagramFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +103,8 @@
 			children = (
 				113410361EA9B01200E8E7EF /* HomeController.swift */,
 				11B822D31EA9B1AC003FE3D9 /* HomePostCell.swift */,
+				11DE436C1EB972E200730F85 /* CommentsController.swift */,
+				11DE436E1EBAD63200730F85 /* CommentsCell.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";
@@ -117,6 +125,7 @@
 			children = (
 				11DE43591EAB8D2200730F85 /* User.swift */,
 				1134102F1E9DC03000E8E7EF /* Post.swift */,
+				11DE43701EBAD88D00730F85 /* Comment.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -363,10 +372,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7D90C8F1E7A24F7008526BE /* SignUpController.swift in Sources */,
+				11DE436F1EBAD63200730F85 /* CommentsCell.swift in Sources */,
 				11B822D41EA9B1AC003FE3D9 /* HomePostCell.swift in Sources */,
+				11DE43711EBAD88D00730F85 /* Comment.swift in Sources */,
 				11A7E3AC1E971DEE0070DC50 /* aaaa.swift in Sources */,
 				C7FC59751E7DF8A20051CD10 /* Extensions.swift in Sources */,
 				11DE436B1EB82FFB00730F85 /* CustomAnimationDismiss.swift in Sources */,
+				11DE436D1EB972E200730F85 /* CommentsController.swift in Sources */,
 				11A7E3AF1E988B3D0070DC50 /* PhotoSelectorController.swift in Sources */,
 				113410341EA8428800E8E7EF /* CustomImageView.swift in Sources */,
 				11DE43651EB1A63700730F85 /* CameraController.swift in Sources */,
