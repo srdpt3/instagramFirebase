@@ -14,23 +14,41 @@ class  CommentsCell: UICollectionViewCell {
     
     var comment : Comment?{
         didSet{
-                textLabel.text = comment?.text
+            
+            guard let comment = comment else { return }
+            let attributedText = NSMutableAttributedString(string: (comment.user.username), attributes: [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 14)])
+            
+            attributedText.append(NSAttributedString(string: " " + comment.text, attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 14)]))
+            
+            textView.attributedText = attributedText
+            print(comment.user.profileImageUrl)
+            profileImageView.loadImage(urlString: comment.user.profileImageUrl)
         }
     }
     
-    let textLabel : UILabel = {
-        let lb = UILabel()
+    let textView : UITextView = {
+        let lb = UITextView()
         lb.font = UIFont.systemFont(ofSize: 14)
-        lb.numberOfLines = 0
+        lb.isScrollEnabled = false
         return lb
     }()
+    
+    let profileImageView : CustomImageView = {
+        let iv = CustomImageView()
+        iv.clipsToBounds = true
+        iv.contentMode = .scaleAspectFill
+        return iv
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         
-        backgroundColor = .lightGray
-        addSubview(textLabel)
-        textLabel.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 4, paddingBottom: 4, paddingRight: 4, width: 0, height: 0)
+        addSubview(textView)
+        addSubview(profileImageView)
+        textView.anchor(top: topAnchor, left: profileImageView.rightAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 4, paddingLeft: 4, paddingBottom: 4, paddingRight: 4, width: 0, height: 0)
+        profileImageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: nil, paddingTop: 8, paddingLeft: 8, paddingBottom: 0, paddingRight: 0, width: 40, height: 40)
+        profileImageView.layer.cornerRadius = 40/2
         
     }
     

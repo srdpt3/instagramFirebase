@@ -13,6 +13,7 @@ struct User {
     let uid : String
     let username: String
     let profileImageUrl: String
+    let imageNum : Int = 0
     
     init(uid:String, dictionary: [String: Any]) {
         self.uid = uid

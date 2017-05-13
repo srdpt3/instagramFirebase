@@ -17,8 +17,14 @@ extension UIColor {
     //    func someRandomeMethod() {
     //
     //    }
+    static func mainBlue() -> UIColor{
+        return  UIColor.rgb(red: 17, green: 154, blue: 237)
+        
+    }
     
 }
+
+
 
 
 

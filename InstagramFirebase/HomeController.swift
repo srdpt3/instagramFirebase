@@ -15,7 +15,7 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
     override func viewDidLoad() {
         super.viewDidLoad()
         
-      //  let name = NSNotification.Name(rawValue: "UploadFeed")
+        //  let name = NSNotification.Name(rawValue: "UploadFeed")
         NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateFeed), name: SharePhotoController.updateFeedName, object: nil)
         
         collectionView?.backgroundColor = .white
@@ -119,12 +119,44 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
     func didTapComment(post: Post) {
         print("message coming from homecontroller")
         
-        print(post.caption) 
+        print(post.caption)
         let commentsController  = CommentsController(collectionViewLayout: UICollectionViewFlowLayout())
         commentsController.post = post
         navigationController?.pushViewController(commentsController, animated: true)
     }
-
+    
+    
+    func didLike(for cell: HomePostCell) {
+        print("message cLike")
+        guard let indexPath = collectionView?.indexPath(for: cell) else { return }
+        
+        var post = self.posts[indexPath.item]
+        print(post.caption)
+        
+        guard let postId = post.id else { return }
+        
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+        
+        let values = [uid : post.hasLiked == true ? 0 : 1]
+        
+        FIRDatabase.database().reference().child("likes").child(postId).updateChildValues(values) { (err, _) in
+            
+            if let err = err {
+                print("error save liked")
+                return
+            }
+            
+            print("succesfully liked")
+            
+            post.hasLiked = !post.hasLiked
+            
+            self.posts[indexPath.item] = post
+            
+            self.collectionView?.reloadItems(at: [indexPath])
+            
+            
+        }
+    }
     
     var posts = [Post]()
     
@@ -149,15 +181,35 @@ class HomeController: UICollectionViewController , UICollectionViewDelegateFlowL
                 
                 var post = Post(user : user, dict: dict)
                 post.id = key
+                
+                guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+            FIRDatabase.database().reference().child("likes").child(key).child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+                    
+                if let value = snapshot.value as? Int, value == 1{
+                    post.hasLiked = true
+                }else{
+                    post.hasLiked = false
+                }
+                
+                
                 self.posts.append(post)
+                //Sort by creation Date
+                self.posts.sort(by: { (p1, p2) -> Bool in
+                    return p1.creationDate.compare(p2.creationDate) == .orderedDescending
+                })
+                self.collectionView?.reloadData()
+
+
+                
+                
+                }, withCancel: { (err) in
+                    print("Failed tp fetch like info for post", err)
+                })
+                
+                
+              
                 
             })
-            //Sort by creation Date
-            self.posts.sort(by: { (p1, p2) -> Bool in
-                return p1.creationDate.compare(p2.creationDate) == .orderedDescending
-            })
-            
-            self.collectionView?.reloadData()
             
         }) { (err) in
             print("Failed to fetch posts")

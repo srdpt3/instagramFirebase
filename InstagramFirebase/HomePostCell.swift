@@ -11,6 +11,7 @@ import UIKit
 protocol HomePostCellDelegate{
     
     func didTapComment(post:Post)
+    func didLike(for cell:HomePostCell)
 }
 
 
@@ -24,6 +25,7 @@ class HomePostCell: UICollectionViewCell {
             PhotoImageView.loadImage(urlString: postImageUrl)
             
             usernameLabel.text = post?.user.username
+            likeButton.setImage(post?.hasLiked == true ?  #imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysOriginal)  : #imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal) , for: .normal)
             
             guard let profileImageUrl = post?.user.profileImageUrl else { return }
             userProfileImageView.loadImage(urlString: profileImageUrl)
@@ -85,9 +87,11 @@ class HomePostCell: UICollectionViewCell {
         
     }()
     
-    let likeButton : UIButton = {
+    lazy var likeButton : UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleLike), for: .touchUpInside)
+
         return button
         
     }()
@@ -100,11 +104,7 @@ class HomePostCell: UICollectionViewCell {
         
     }()
     
-    func handleComment(){
-        guard let post = post else { return }
-        delegate?.didTapComment(post: post)
-        
-    }
+
     
     let sendMessageButton : UIButton = {
         let button = UIButton(type: .system)
@@ -125,6 +125,8 @@ class HomePostCell: UICollectionViewCell {
           label.numberOfLines = 0
         return label
     }()
+    
+    
     
     
     override init(frame: CGRect) {
@@ -155,6 +157,19 @@ class HomePostCell: UICollectionViewCell {
         setupActionButtons()
         
         captionLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: 8, paddingRight: 0, width: 0, height: 0)
+        
+    }
+    
+    
+    func handleLike(){
+        
+        print("liked")
+        delegate?.didLike(for: self)
+    }
+    
+    func handleComment(){
+        guard let post = post else { return }
+        delegate?.didTapComment(post: post)
         
     }
     
